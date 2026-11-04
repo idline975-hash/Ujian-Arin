@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pembuat Soal Otomatis</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white; padding: 0; }
+      .card-shadow { box-shadow: none !important; border: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 min-h-screen py-8 px-4 sm:px-6">
+
+  <div class="max-w-2xl mx-auto space-y-6">
+    
+    <!-- CARD UTAMA -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden no-print border border-slate-100">
+      
+      <!-- HEADER -->
+      <div class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 px-6 py-6 text-center text-white relative">
+        <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Pembuat Soal Otomatis</h1>
+        <p class="text-indigo-100 text-xs sm:text-sm mt-1">Generator Ujian & Kunci Jawaban Instan Berbasis AI (Sekolah & Madrasah)</p>
+      </div>
+
+      <!-- FORM BODY -->
+      <form id="quizForm" onsubmit="generateQuiz(event)" class="p-6 sm:p-8 space-y-5">
+        
+        <!-- BARIS 1: Jenjang, Kelas, Mata Pelajaran -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          <!-- Jenjang Pendidikan -->
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Jenjang Pendidikan <span class="text-red-500">*</span>
+            </label>
+            <select id="jenjang" onchange="handleJenjangChange()" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <option value="SD / MI">SD / MI</option>
+              <option value="SMP / MTs" selected>SMP / MTs</option>
+              <option value="SMA / MA / SMK">SMA / MA / SMK</option>
+            </select>
+          </div>
+
+          <!-- Kelas -->
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Kelas <span class="text-red-500">*</span>
+            </label>
+            <select id="kelas" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <!-- Diisi otomatis oleh JS -->
+            </select>
+          </div>
+
+          <!-- Mata Pelajaran -->
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Mata Pelajaran <span class="text-red-500">*</span>
+            </label>
+            <select id="mapel" onchange="handleMapelChange()" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+              <!-- Diisi otomatis oleh JS -->
+            </select>
+          </div>
+
+        </div>
+
+        <!-- BARIS 2: Topik / Materi Spesifik -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+            Topik / Materi Spesifik <span class="text-red-500">*</span>
+          </label>
+          <select id="topikSelect" onchange="handleTopikChange()" required
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition">
+            <!-- Diisi otomatis oleh JS -->
+          </select>
+          
+          <!-- Input Manual jika memilih "Lainnya" -->
+          <input type="text" id="topikManual" placeholder="Tuliskan topik spesifik..." 
+            class="hidden mt-2 w-full bg-white border border-indigo-300 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+        </div>
+
+        <!-- BARIS 3: Tipe Soal & Jumlah Soal -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Tipe Soal</label>
+            <select id="tipeSoal"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+              <option value="Pilihan Ganda" selected>Pilihan Ganda (A, B, C, D)</option>
+              <option value="Isian Singkat">Isian Singkat</option>
+              <option value="Uraian / Essay">Uraian / Essay</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Jumlah Soal</label>
+            <input type="number" id="jumlahSoal" min="1" max="25" value="5" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+
+        </div>
+
+        <!-- PARAMETER KESULITAN -->
+        <div class="bg-slate-50/80 p-4 rounded-xl border border-slate-200/80 space-y-3">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Parameter Kesulitan</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <select id="levelKesulitan"
+              class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+              <option value="Level 1: Mudah (Pemahaman & Mengingat)">Level 1: Mudah (C1 - C2)</option>
+              <option value="Level 2: Sedang (Aplikasi & Analisis)" selected>Level 2: Sedang (C3 - C4)</option>
+              <option value="Level 3: Sulit / HOTS (Evaluasi & Kreasi)">Level 3: Sulit / HOTS (C5 - C6)</option>
+            </select>
+
+            <select id="distribusiSoal"
+              class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+              <option value="Proporsional (Normal)" selected>Proporsional (Normal)</option>
+              <option value="Fokus HOTS (70% Sulit)">Fokus HOTS (70% Sulit)</option>
+              <option value="Seragam (Tingkat Kesulitan Sama)">Seragam (Tingkat Kesulitan Sama)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TOMBOL SUBMIT -->
+        <button type="submit" id="btnSubmit"
+          class="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-500/25 transition duration-200 flex items-center justify-center gap-2 active:scale-[0.99]">
+          <i data-lucide="rocket" class="w-5 h-5"></i>
+          <span>Buat Soal</span>
+        </button>
+
+      </form>
+    </div>
+
+    <!-- HASIL GENERASI SOAL -->
+    <div id="resultContainer" class="hidden bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-slate-100">
+      <div class="flex justify-between items-center border-b pb-4 mb-6 no-print">
+        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <i data-lucide="file-check" class="text-indigo-600"></i> Hasil Lembar Soal
+        </h2>
+        <div class="flex gap-2">
+          <button onclick="window.print()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition">
+            <i data-lucide="printer" class="w-4 h-4"></i> Cetak / PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- KONTEN LEMBAR SOAL -->
+      <div id="quizOutput" class="space-y-6 text-slate-800">
+        <!-- Hasil soal akan di-render di sini -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // DATA DYNAMIC CASCADING SELECTS TERMASUK PELAJARAN KEAGAMAAN MADRASAH (MI, MTs, MA)
+    const dataPendidikan = {
+      "SD / MI": {
+        kelas: ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
+        mapel: {
+          // --- PELAJARAN KEAGAMAAN (MI) ---
+          "Akidah Akhlak (MI)": ["Kalimat Thayyibah", "Asmaul Husna", "Akhlak Terpuji (Hormat & Patuh)", "Akhlak Tercela (Sombong & Kikir)", "Iman kepada Malaikat & Hari Akhir"],
+          "Al-Qur'an Hadis (MI)": ["Huruf Hijaiyah & Harakat", "Surah-surah Pendek (Al-Fatihah, Al-Ikhlas)", "Hukum Tajwid (Idgham, Izhar, Ikhfa)", "Hadis tentang Kebersihan & Menuntut Ilmu"],
+          "Fikih (MI)": ["Tata Cara Rukun Islam & Syahadat", "Tata Cara Wudhu & Tayamum", "Sholat Fardhu & Sholat Jamaah", "Puasa Ramadhan & Zakat", "Makanan Halal & Haram"],
+          "Sejarah Kebudayaan Islam / SKI (MI)": ["Kisah Nabi Muhammad SAW Usia Muda", "Kerasulan Nabi Muhammad SAW", "Hijrah Nabi ke Thaif & Madinah", "Kisah Khulafaur Rasyidin"],
+          "Bahasa Arab (MI)": ["Perkenalan (At-Ta'aruf)", "Peralatan Sekolah (Al-Adawat Al-Madrasiyyah)", "Anggota Tubuh (A'da'ul Jismi)", "Warna & Angka (Al-Alwan wal A'dad)"],
+
+          // --- PELAJARAN UMUM ---
+          "Pendidikan Pancasila / PKN": ["Simbol dan Sila Pancasila", "Hak dan Kewajiban", "Keragaman Budaya", "Aturan di Rumah & Sekolah"],
+          "Matematika": ["Penjumlahan & Pengurangan", "Perkalian & Pembagian", "Pecahan Sederhana", "Bangun Datar & Ruang", "Pengukuran Waktu & Panjang"],
+          "IPAS (IPA-IPS)": ["Tumbuhan & Hewan di Sekitar", "Wujud Zat & Perubahannya", "Panca Indera", "Peta & Kenampakan Alam"],
+          "Bahasa Indonesia": ["Membaca Nyaring & Menulis", "Puisi Anak", "Surat Pribadi", "Ide Pokok Paragraf", "Teks Deskripsi"]
+        }
+      },
+      "SMP / MTs": {
+        kelas: ["Kelas 7", "Kelas 8", "Kelas 9"],
+        mapel: {
+          // --- PELAJARAN KEAGAMAAN (MTs) ---
+          "Akidah Akhlak (MTs)": ["Akidah Islam & Sifat-sifat Allah", "Sifat Wajib, Mustahil, & Jaiz Bagi Rasul", "Adab Kepada Orang Tua & Guru", "Akhlak Terpuji (Tawakkal, Ikhtiar, Syukur)", "Menghindari Akhlak Tercela (Ananiyah, Hasad)"],
+          "Al-Qur'an Hadis (MTs)": ["Hukum Bacaan Mad & Waqaf", "Hadis tentang Menuntut Ilmu & Berbagi", "Kandungan Surah Al-Mujadilah & Ar-Rahman", "Hukum Bacaan Mim Mati & Nun Mati"],
+          "Fikih (MTs)": ["Bersuci dari Hadats (Thaharah)", "Sholat Sunnah Berjamaah & Munfarid", "Sujud Sahwi, Sujud Tilawah, & Sujud Syukur", "Zakat Fitrah & Zakat Maal", "Haji dan Umrah"],
+          "Sejarah Kebudayaan Islam / SKI (MTs)": ["Kondisi Masyarakat Arab Pra-Islam", "Dakwah Periode Makkah & Madinah", "Perkembangan Islam Peradaban Dinasti Umayyah", "Perkembangan Peradaban Dinasti Abbasiyah", "Peran Wali Songo di Nusantara"],
+          "Bahasa Arab (MTs)": ["Fasilitas Sekolah (Al-Marafiq Al-Madrasiyyah)", "Kegiatan Sehari-hari (Al-A'mal Al-Yaumiyyah)", "Hobi (Al-Hiwayah)", "Profesi / Pekerjaan (Al-Mihnatu)"],
+
+          // --- PELAJARAN UMUM ---
+          "Matematika": ["Teorema Pythagoras", "Persamaan Kuadrat", "Sistem Persamaan Linear Dua Variabel (SPLDV)", "Statistika & Peluang", "Aritmatika Sosial"],
+          "IPA (Fisika, Biologi, Kimia)": ["Sistem Pencernaan Manusia", "Hukum Newton & Gaya", "Gelombang & Bunyi", "Struktur Atom & Unsur", "Ekosistem & Lingkungan"],
+          "Bahasa Indonesia": ["Teks Laporan Hasil Observasi", "Teks Eksplanasi", "Teks Puisi & Pantun", "Surat Resmi & Dinas"],
+          "Bahasa Inggris": ["Simple Present Tense", "Descriptive Text", "Recount Text", "Narrative Text"],
+          "IPS": ["Interaksi Antarruang", "Masa Praaksara di Indonesia", "Kegiatan Ekonomi & Pasar", "Perubahan Sosial Budaya"]
+        }
+      },
+      "SMA / MA / SMK": {
+        kelas: ["Kelas 10", "Kelas 11", "Kelas 12"],
+        mapel: {
+          // --- PELAJARAN KEAGAMAAN (MA) ---
+          "Akidah Akhlak (MA)": ["Konsep Tauhid (Uluhiyah, Rububiyah, Asma wa Sifat)", "Tasawuf & Purifikasi Hati", "Al-Kulliyat Al-Khamsah (Perlindungan Agama, Jiwa, Akal, Keturunan, Harta)", "Etika Berbusana & Berhias dalam Islam"],
+          "Al-Qur'an Hadis (MA)": ["Struktur Al-Qur'an & Sejarah Pembukuannya", "Metode Penafsiran Al-Qur'an", "Autentisitas Hadis (Sahih, Hasan, Dha'if)", "Hadis Perihal Demokrasi & Toleransi"],
+          "Fikih (MA)": ["Kosep Muamalah (Jual Beli, Riba, Bank Syariah)", "Hukum Keluarga (Munakahat & Waris/Faraidh)", "Hukum Pidana Islam (Jinayah & Hudud)", "Peradilan Islam (Qadha)"],
+          "Sejarah Kebudayaan Islam / SKI (MA)": ["Peradaban Islam Dinasti Utsmaniyah, Safawi, & Mughal", "Pembaharuan Pemikiran Islam (Abduh, Afghani, Khan)", "Sejarah Kerajaan-kerajaan Islam di Indonesia", "Peran Kerajaan Islam dalam Melawan Kolonialisme"],
+          "Bahasa Arab (MA)": ["Teks Hiwar Keagamaan & Pendidikan", "Kaidah Nahwu (Fi'il, Fa'il, Ma'ful Bih, Idhafah)", "Kaidah Sharaf (Tashrif Lughawi & Istilahi)", "Qira'ah wa Kitabah (Membaca Teks Pendek)"],
+          "Ilmu Tafsir (Keagamaan MA)": ["Sejarah Perkembangan Ilmu Tafsir", "Tafsir Bil Ma'tsur vs Bil Ra'yi", "Tafsir Tematik (Maudhu'i)", "Asbabun Nuzul"],
+          "Ilmu Hadis (Keagamaan MA)": ["Unsur Hadis (Sanad, Matan, Rawi)", "Klasifikasi Hadis Berdasarkan Jumlah Rawi", "Musthalah Al-Hadith", "Kritis Sanad dan Matan"],
+          "Usul Fikih (Keagamaan MA)": ["Sumber Hukum Islam (Al-Qur'an, Hadis, Ijma', Qiyas)", "Kaidah Usuliyyah (Am, Khass, Amar, Nahi)", "Ijtihad, Ittiba', & Taqlid", "Maqashid Shariah"],
+
+          // --- PELAJARAN UMUM ---
+          "Matematika Wajib / Lanjut": ["Fungsi Komposisi & Invers", "Trigonometri", "Matriks & Determinant", "Kalkulus (Limit & Turunan)", "Vektor"],
+          "Fisika": ["Dinamika Gerak & Hukum Newton", "Termodinamika", "Listrik Statis & Dinamis", "Fisika Modern"],
+          "Kimia": ["Struktur Atom & Tabel Periodik", "Ikatan Kimia", "Stokiometri & Reaksi Redoks", "Asam Basa & Larutan"],
+          "Biologi": ["Genetika & Pewarisan Sifat", "Sistem Organ Manusia", "Bioteknologi", "Evolusi"],
+          "Ekonomi / Akuntansi": ["Persamaan Dasar Akuntansi", "Jurnal Umum & Buku Besar", "Manajemen & Badan Usaha", "Pasar Modal"],
+          "Bahasa Indonesia": ["Teks Negosiasi", "Teks Editorial", "Artikel Ilmiah", "Novel & Resensi"]
+        }
+      }
+    };
+
+    // INIT APP
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      handleJenjangChange();
+    });
+
+    // HANDLER EVENT CHANGE
+    function handleJenjangChange() {
+      const jenjangVal = document.getElementById("jenjang").value;
+      const kelasSelect = document.getElementById("kelas");
+      const mapelSelect = document.getElementById("mapel");
+
+      // Populate Kelas
+      kelasSelect.innerHTML = "";
+      dataPendidikan[jenjangVal].kelas.forEach(k => {
+        kelasSelect.innerHTML += `<option value="${k}">${k}</option>`;
+      });
+
+      // Populate Mapel
+      mapelSelect.innerHTML = "";
+      Object.keys(dataPendidikan[jenjangVal].mapel).forEach(m => {
+        mapelSelect.innerHTML += `<option value="${m}">${m}</option>`;
+      });
+
+      handleMapelChange();
+    }
+
+    function handleMapelChange() {
+      const jenjangVal = document.getElementById("jenjang").value;
+      const mapelVal = document.getElementById("mapel").value;
+      const topikSelect = document.getElementById("topikSelect");
+
+      topikSelect.innerHTML = "";
+      const daftarTopik = dataPendidikan[jenjangVal].mapel[mapelVal] || [];
+
+      daftarTopik.forEach(t => {
+        topikSelect.innerHTML += `<option value="${t}">${t}</option>`;
+      });
+
+      topikSelect.innerHTML += `<option value="Lainnya">✏️ Lainnya / Input Manual...</option>`;
+      handleTopikChange();
+    }
+
+    function handleTopikChange() {
+      const topikSelect = document.getElementById("topikSelect");
+      const topikManual = document.getElementById("topikManual");
+
+      if (topikSelect.value === "Lainnya") {
+        topikManual.classList.remove("hidden");
+        topikManual.required = true;
+      } else {
+        topikManual.classList.add("hidden");
+        topikManual.required = false;
+      }
+    }
+
+    // SIMULASI / GENERATOR SOAL VIA AI & DUMMY FALLBACK
+    async function generateQuiz(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById("btnSubmit");
+      const jenjang = document.getElementById("jenjang").value;
+      const kelas = document.getElementById("kelas").value;
+      const mapel = document.getElementById("mapel").value;
+      
+      let topik = document.getElementById("topikSelect").value;
+      if (topik === "Lainnya") {
+        topik = document.getElementById("topikManual").value;
+      }
+
+      const tipeSoal = document.getElementById("tipeSoal").value;
+      const jumlah = parseInt(document.getElementById("jumlahSoal").value);
+      const level = document.getElementById("levelKesulitan").value;
+
+      btn.disabled = true;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>Membuat Soal...</span>`;
+      lucide.createIcons();
+
+      // Anda dapat memasukkan Gemini API Key milik Anda di variabel ini:
+      const apiKey = ""; 
+
+      if (apiKey !== "") {
+        const prompt = `Buatkan ${jumlah} soal ${tipeSoal} untuk ${jenjang} (${kelas}), mata pelajaran ${mapel}, dengan topik "${topik}".
+Tingkat kesulitan: ${level}.
+Sesuaikan bahasa dan konteks soal agar sesuai dengan tingkat siswa ${jenjang} (${kelas}).
+
+Berikan respon HANYA dalam format JSON valid tanpa tanda markdown (tanpa backtick \`\`\`json):
+{
+  "soal": [
+    {
+      "nomor": 1,
+      "pertanyaan": "Teks pertanyaan di sini",
+      "opsi": ["A. pilihan A", "B. pilihan B", "C. pilihan C", "D. pilihan D"],
+      "jawaban": "A",
+      "pembahasan": "Penjelasan singkat jawaban"
+    }
+  ]
+}`;
+
+        try {
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+
+          const data = await response.json();
+          let rawText = data.candidates[0].content.parts[0].text;
+          rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+          const quizData = JSON.parse(rawText);
+
+          renderQuizOutput(jenjang, kelas, mapel, topik, quizData.soal, tipeSoal, level);
+        } catch (error) {
+          console.error(error);
+          alert("Gagal terhubung ke API AI, menampilkan template soal bawaan.");
+          renderQuizFallback(jenjang, kelas, mapel, topik, tipeSoal, jumlah, level);
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="rocket" class="w-5 h-5"></i><span>Buat Soal</span>`;
+          lucide.createIcons();
+        }
+      } else {
+        // Fallback Simulasi Cepat (Tanpa API Key)
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = `<i data-lucide="rocket" class="w-5 h-5"></i><span>Buat Soal</span>`;
+          lucide.createIcons();
+          renderQuizFallback(jenjang, kelas, mapel, topik, tipeSoal, jumlah, level);
+        }, 600);
+      }
+    }
+
+    // RENDER HASIL AI
+    function renderQuizOutput(jenjang, kelas, mapel, topik, daftarSoal, tipeSoal, level) {
+      const container = document.getElementById("resultContainer");
+      const output = document.getElementById("quizOutput");
+
+      let html = `
+        <div class="border-b-2 border-slate-800 pb-4 mb-6 text-center">
+          <h2 class="text-xl font-bold uppercase tracking-wide">LEMBAR UJIAN / ASSESMEN MADRASAH & SEKOLAH</h2>
+          <p class="text-sm font-semibold text-slate-600">${mapel} — ${jenjang} (${kelas})</p>
+          <p class="text-xs text-slate-500 italic mt-0.5">Materi / Topik: ${topik}</p>
+        </div>
+
+        <div class="grid grid-cols-2 text-xs font-semibold gap-2 border p-3 rounded-lg bg-slate-50 mb-6">
+          <div>Nama Siswa : ...........................................</div>
+          <div>Tanggal : .........................</div>
+          <div>Kelas/No : ...........................................</div>
+          <div>Waktu : 45 Menit</div>
+        </div>
+
+        <div class="space-y-6">
+      `;
+
+      daftarSoal.forEach((item, idx) => {
+        html += `
+          <div class="space-y-2">
+            <p class="font-medium text-sm text-slate-800">
+              <span class="font-bold">${idx + 1}.</span> ${item.pertanyaan}
+            </p>
+        `;
+
+        if (tipeSoal === "Pilihan Ganda" && item.opsi) {
+          html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-4 text-sm text-slate-700">`;
+          item.opsi.forEach(opt => {
+            html += `<div>${opt}</div>`;
+          });
+          html += `</div>`;
+        } else if (tipeSoal === "Isian Singkat") {
+          html += `<div class="pl-4 pt-1"><div class="border-b border-dashed border-slate-400 w-full max-w-md h-6"></div></div>`;
+        } else {
+          html += `
+            <div class="pl-4 pt-1 space-y-2">
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+      });
+
+      html += `</div>`;
+
+      // KUNCI JAWABAN
+      html += `
+        <div class="mt-10 pt-6 border-t-2 border-dashed border-slate-300">
+          <h3 class="font-bold text-sm text-slate-700 uppercase tracking-wider mb-3">Kunci Jawaban & Pembahasan</h3>
+          <div class="space-y-2 text-xs text-slate-600">
+      `;
+
+      daftarSoal.forEach((item, idx) => {
+        html += `<p><strong>${idx + 1}. Jawaban: ${item.jawaban || '-'}</strong> — ${item.pembahasan || ''}</p>`;
+      });
+
+      html += `</div></div>`;
+
+      output.innerHTML = html;
+      container.classList.remove("hidden");
+      container.scrollIntoView({ behavior: "smooth" });
+    }
+
+    // RENDER FALLBACK UNTUK SIMULASI LOKAL
+    function renderQuizFallback(jenjang, kelas, mapel, topik, tipeSoal, jumlah, level) {
+      const container = document.getElementById("resultContainer");
+      const output = document.getElementById("quizOutput");
+
+      let html = `
+        <div class="border-b-2 border-slate-800 pb-4 mb-6 text-center">
+          <h2 class="text-xl font-bold uppercase tracking-wide">LEMBAR UJIAN / ASSESMEN</h2>
+          <p class="text-sm font-semibold text-slate-600">${mapel} — ${jenjang} (${kelas})</p>
+          <p class="text-xs text-slate-500 italic mt-0.5">Materi / Topik: ${topik}</p>
+        </div>
+
+        <div class="grid grid-cols-2 text-xs font-semibold gap-2 border p-3 rounded-lg bg-slate-50 mb-6">
+          <div>Nama Siswa : ...........................................</div>
+          <div>Tanggal : .........................</div>
+          <div>Kelas/No : ...........................................</div>
+          <div>Waktu : 45 Menit</div>
+        </div>
+
+        <div class="space-y-6">
+      `;
+
+      for (let i = 1; i <= jumlah; i++) {
+        html += `
+          <div class="space-y-2">
+            <p class="font-medium text-sm text-slate-800">
+              <span class="font-bold">${i}.</span> Berikut adalah pertanyaan ke-${i} mengenai materi <span class="font-semibold text-indigo-600">${topik}</span> pada pelajaran ${mapel} (${jenjang} ${kelas})?
+            </p>
+        `;
+
+        if (tipeSoal === "Pilihan Ganda") {
+          html += `
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-4 text-sm text-slate-700">
+              <div>A. Opsi Pilihan A</div>
+              <div>B. Opsi Pilihan B</div>
+              <div>C. Opsi Pilihan C</div>
+              <div>D. Opsi Pilihan D</div>
+            </div>
+          `;
+        } else if (tipeSoal === "Isian Singkat") {
+          html += `<div class="pl-4 pt-1"><div class="border-b border-dashed border-slate-400 w-full max-w-md h-6"></div></div>`;
+        } else {
+          html += `
+            <div class="pl-4 pt-1 space-y-2">
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+            </div>
+          `;
+        }
+
+        html += `</div>`;
+      }
+
+      html += `</div>`;
+
+      html += `
+        <div class="mt-10 pt-6 border-t-2 border-dashed border-slate-300">
+          <h3 class="font-bold text-sm text-slate-700 uppercase tracking-wider mb-2">Kunci Jawaban & Ringkasan</h3>
+          <p class="text-xs text-slate-500">Tipe: ${tipeSoal} | Level Kesulitan: ${level}</p>
+        </div>
+      `;
+
+      output.innerHTML = html;
+      container.classList.remove("hidden");
+      container.scrollIntoView({ behavior: "smooth" });
+    }
+  </script>
+</body>
+</html>

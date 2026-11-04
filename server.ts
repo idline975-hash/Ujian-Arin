@@ -21,20 +21,20 @@ async function startServer() {
     try {
       const { jenjang, kelas, mapel, topik, tipeSoal, jumlahSoal, levelKesulitan, distribusi } = req.body;
 
-      const promptText = `Buatkan ${jumlahSoal || 5} soal berkualitas tinggi untuk materi '${topik}' mata pelajaran '${mapel}' tingkat ${jenjang} (${kelas}).
-Tipe soal: ${tipeSoal || 'Pilihan Ganda'}.
+      const promptText = `Buatkan ${jumlahSoal || 5} soal ${tipeSoal || 'Pilihan Ganda'} berkualitas tinggi untuk tingkat ${jenjang} (${kelas}), mata pelajaran ${mapel}, dengan topik "${topik}".
 Tingkat Kesulitan: ${levelKesulitan || 'Level 2: Sedang (Aplikasi)'}.
 Distribusi: ${distribusi || 'Proporsional (Normal)'}.
+Bahasa harus disesuaikan dengan tingkat pemahaman anak ${jenjang} ${kelas}.
 
 Berikan output HANYA berupa JSON valid TANPA format markdown (tanpa \`\`\`json dan tanpa backticks) dengan struktur persis seperti ini:
 {
   "soal": [
     {
-      "id": 1,
-      "pertanyaan": "Isi pertanyaan disini?",
-      "opsi": ["A. pilihan 1", "B. pilihan 2", "C. pilihan 3", "D. pilihan 4"], 
-      "kunci": "A. pilihan 1",
-      "pembahasan": "Penjelasan rinci langkah demi langkah penyelesaiannya."
+      "nomor": 1,
+      "pertanyaan": "Teks pertanyaan di sini",
+      "opsi": ["A. pilihan", "B. pilihan", "C. pilihan", "D. pilihan"],
+      "jawaban": "A. pilihan",
+      "pembahasan": "Penjelasan singkat"
     }
   ]
 }
@@ -43,7 +43,7 @@ Catatan: Jika Tipe soal 'Isian Singkat' atau 'Uraian / Essay', array 'opsi' bole
       let responseText = '';
       try {
         const response = await ai.models.generateContent({
-          model: 'gemini-3.5-flash-lite',
+          model: 'gemini-3.8-flash',
           contents: [{ role: 'user', parts: [{ text: promptText }] }],
           config: {
             responseMimeType: 'application/json',
@@ -52,10 +52,10 @@ Catatan: Jika Tipe soal 'Isian Singkat' atau 'Uraian / Essay', array 'opsi' bole
         });
         responseText = response.text || '';
       } catch (geminiErr) {
-        console.error("Gemini 3.5 flash lite error, trying gemini-3.8-flash:", geminiErr);
+        console.error("Gemini 3.8 flash error, trying gemini-3.5-flash-lite:", geminiErr);
         try {
           const response = await ai.models.generateContent({
-            model: 'gemini-3.8-flash',
+            model: 'gemini-3.5-flash-lite',
             contents: [{ role: 'user', parts: [{ text: promptText }] }],
             config: {
               responseMimeType: 'application/json',
@@ -77,7 +77,14 @@ Catatan: Jika Tipe soal 'Isian Singkat' atau 'Uraian / Essay', array 'opsi' bole
           }
           const parsed = JSON.parse(cleanJson);
           if (parsed && parsed.soal && Array.isArray(parsed.soal)) {
-            return res.json(parsed);
+            const normalizedSoal = parsed.soal.map((item: any, idx: number) => ({
+              id: item.id || item.nomor || (idx + 1),
+              pertanyaan: item.pertanyaan || '',
+              opsi: item.opsi || [],
+              kunci: item.kunci || item.jawaban || '',
+              pembahasan: item.pembahasan || ''
+            }));
+            return res.json({ soal: normalizedSoal });
           }
         } catch (parseErr) {
           console.error("Failed to parse AI JSON response:", parseErr);
