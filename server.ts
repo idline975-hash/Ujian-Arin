@@ -21,10 +21,10 @@ async function startServer() {
     try {
       const { jenjang, kelas, mapel, topik, tipeSoal, jumlahSoal, levelKesulitan, distribusi } = req.body;
 
-      const promptText = `Buatkan ${jumlahSoal || 5} soal ${tipeSoal || 'Pilihan Ganda'} berkualitas tinggi untuk tingkat ${jenjang} (${kelas}), mata pelajaran ${mapel}, dengan topik "${topik}".
-Tingkat Kesulitan: ${levelKesulitan || 'Level 2: Sedang (Aplikasi)'}.
+      const promptText = `Bertindaklah sebagai seorang Guru Profesional dan Pakar Kurikulum Pendidikan Nasional serta Madrasah (MI, MTs, MA) di Indonesia. Tugas Anda adalah merancang ${jumlahSoal || 5} soal ${tipeSoal || 'Pilihan Ganda'} berkualitas tinggi yang valid secara pedagogis untuk tingkat ${jenjang} (${kelas}), mata pelajaran ${mapel}, dengan topik "${topik}".
+Tingkat Kesulitan: ${levelKesulitan || 'Level 2: Sedang (Aplikasi & Analisis / C3-C4)'}.
 Distribusi: ${distribusi || 'Proporsional (Normal)'}.
-Bahasa harus disesuaikan dengan tingkat pemahaman anak ${jenjang} ${kelas}.
+Bahasa, konteks, dan tingkat kognitif harus disesuaikan secara tepat dengan jenjang ${jenjang} (${kelas}).
 
 Berikan output HANYA berupa JSON valid TANPA format markdown (tanpa \`\`\`json dan tanpa backticks) dengan struktur persis seperti ini:
 {
@@ -34,7 +34,7 @@ Berikan output HANYA berupa JSON valid TANPA format markdown (tanpa \`\`\`json d
       "pertanyaan": "Teks pertanyaan di sini",
       "opsi": ["A. pilihan", "B. pilihan", "C. pilihan", "D. pilihan"],
       "jawaban": "A. pilihan",
-      "pembahasan": "Penjelasan singkat"
+      "pembahasan": "Penjelasan singkat pedagogis"
     }
   ]
 }
