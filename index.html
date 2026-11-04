@@ -27,7 +27,7 @@
       <!-- HEADER -->
       <div class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 px-6 py-6 text-center text-white relative">
         <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">Pembuat Soal Otomatis</h1>
-        <p class="text-indigo-100 text-xs sm:text-sm mt-1">Generator Lembar Ujian Instan Sekolah & Madrasah</p>
+        <p class="text-indigo-100 text-xs sm:text-sm mt-1">Generator Lembar Ujian Instan Berbasis Bank Soal Kurikulum</p>
       </div>
 
       <!-- FORM BODY -->
@@ -35,42 +35,56 @@
         
         <!-- BARIS 1: Jenjang, Kelas, Mata Pelajaran -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          <!-- Jenjang Pendidikan -->
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Jenjang <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Jenjang Pendidikan <span class="text-red-500">*</span>
+            </label>
             <select id="jenjang" onchange="handleJenjangChange()" required
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 outline-none">
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
               <option value="SD / MI">SD / MI</option>
               <option value="SMP / MTs" selected>SMP / MTs</option>
               <option value="SMA / MA / SMK">SMA / MA / SMK</option>
             </select>
           </div>
 
+          <!-- Kelas -->
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Kelas <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Kelas <span class="text-red-500">*</span>
+            </label>
             <select id="kelas" required
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 outline-none">
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
             </select>
           </div>
 
+          <!-- Mata Pelajaran -->
           <div>
-            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Mata Pelajaran <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+              Mata Pelajaran <span class="text-red-500">*</span>
+            </label>
             <select id="mapel" onchange="handleMapelChange()" required
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 outline-none">
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
             </select>
           </div>
+
         </div>
 
         <!-- BARIS 2: Topik / Materi Spesifik -->
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Topik / Materi Spesifik <span class="text-red-500">*</span></label>
+          <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">
+            Topik / Materi Spesifik <span class="text-red-500">*</span>
+          </label>
           <select id="topikSelect" onchange="handleTopikChange()" required
-            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 outline-none">
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
           </select>
+          
           <input type="text" id="topikManual" placeholder="Tuliskan topik spesifik..." 
             class="hidden mt-2 w-full bg-white border border-indigo-300 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 outline-none">
         </div>
 
-        <!-- BARIS 3: Tipe Soal & Jumlah -->
+        <!-- BARIS 3: Tipe Soal & Jumlah Soal -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Tipe Soal</label>
@@ -81,6 +95,7 @@
               <option value="Uraian / Essay">Uraian / Essay</option>
             </select>
           </div>
+
           <div>
             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Jumlah Soal</label>
             <input type="number" id="jumlahSoal" min="1" max="10" value="5" required
@@ -88,42 +103,63 @@
           </div>
         </div>
 
-        <!-- TOMBOL -->
+        <!-- PARAMETER KESULITAN -->
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Parameter Kesulitan</label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <select id="levelKesulitan"
+              class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none">
+              <option value="Level 1: Mudah">Level 1: Mudah (Pemahaman)</option>
+              <option value="Level 2: Sedang" selected>Level 2: Sedang (Aplikasi)</option>
+              <option value="Level 3: Sulit / HOTS">Level 3: Sulit (HOTS)</option>
+            </select>
+
+            <select id="distribusiSoal"
+              class="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 outline-none">
+              <option value="Proporsional (Normal)" selected>Proporsional (Normal)</option>
+              <option value="Fokus HOTS (70% Sulit)">Fokus HOTS (70% Sulit)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- TOMBOL SUBMIT -->
         <button type="submit" id="btnSubmit"
-          class="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-500/25 transition flex items-center justify-center gap-2">
+          class="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-indigo-500/25 transition duration-200 flex items-center justify-center gap-2 active:scale-[0.99]">
           <i data-lucide="rocket" class="w-5 h-5"></i>
-          <span>Buat Soal Sekarang</span>
+          <span>Buat Soal</span>
         </button>
 
       </form>
     </div>
 
-    <!-- HASIL -->
+    <!-- HASIL GENERASI SOAL -->
     <div id="resultContainer" class="hidden bg-white rounded-2xl shadow-xl p-6 sm:p-8 border border-slate-100">
       <div class="flex justify-between items-center border-b pb-4 mb-6 no-print">
         <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
           <i data-lucide="file-check" class="text-indigo-600"></i> Hasil Lembar Soal
         </h2>
-        <button onclick="window.print()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold flex items-center gap-1.5">
+        <button onclick="window.print()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-semibold flex items-center gap-1.5 transition">
           <i data-lucide="printer" class="w-4 h-4"></i> Cetak / PDF
         </button>
       </div>
+
       <div id="quizOutput" class="space-y-6 text-slate-800"></div>
     </div>
 
   </div>
 
   <script>
+    // DATA MATRIX KURIKULUM & MATERI
     const dataPendidikan = {
       "SD / MI": {
         kelas: ["Kelas 1", "Kelas 2", "Kelas 3", "Kelas 4", "Kelas 5", "Kelas 6"],
         mapel: {
           "Akidah Akhlak (MI)": ["Kalimat Thayyibah", "Asmaul Husna", "Akhlak Terpuji"],
-          "Al-Qur'an Hadis (MI)": ["Hukum Tajwid (Idgham, Izhar, Ikhfa)", "Hadis tentang Kebersihan & Menuntut Ilmu"],
-          "Fikih (MI)": ["Wudhu & Tayamum", "Sholat Fardhu"],
-          "Sejarah Kebudayaan Islam / SKI (MI)": ["Kisah Nabi Muhammad SAW"],
-          "Pendidikan Pancasila": ["Simbol dan Sila Pancasila"],
-          "Matematika": ["Penjumlahan & Pengurangan"]
+          "Al-Qur'an Hadis (MI)": ["Hukum Tajwid (Idgham, Izhar, Ikhfa)", "Huruf Hijaiyah", "Surah-surah Pendek"],
+          "Fikih (MI)": ["Wudhu & Tayamum", "Sholat Fardhu", "Rukun Islam"],
+          "Sejarah Kebudayaan Islam / SKI (MI)": ["Kisah Nabi Muhammad SAW", "Khulafaur Rasyidin"],
+          "Pendidikan Pancasila": ["Simbol dan Sila Pancasila", "Hak dan Kewajiban"],
+          "Matematika": ["Penjumlahan & Pengurangan", "Perkalian & Pembagian"]
         }
       },
       "SMP / MTs": {
@@ -131,40 +167,46 @@
         mapel: {
           "Akidah Akhlak (MTs)": ["Sifat Wajib & Mustahil Rasul", "Adab Kepada Orang Tua"],
           "Al-Qur'an Hadis (MTs)": ["Hukum Bacaan Mad & Waqaf", "Hadis Menuntut Ilmu"],
-          "Fikih (MTs)": ["Thaharah (Bersuci)", "Sholat Berjamaah"],
-          "Sejarah Kebudayaan Islam / SKI (MTs)": ["Dinasti Umayyah & Abbasiyah"],
+          "Fikih (MTs)": ["Thaharah (Bersuci)", "Sholat Berjamaah", "Zakat & Haji"],
+          "Sejarah Kebudayaan Islam / SKI (MTs)": ["Dinasti Umayyah & Abbasiyah", "Wali Songo"],
           "Matematika": ["Teorema Pythagoras", "SPLDV"],
-          "IPA": ["Hukum Newton & Gaya"]
+          "IPA": ["Hukum Newton & Gaya", "Sistem Pencernaan"]
         }
       },
       "SMA / MA / SMK": {
         kelas: ["Kelas 10", "Kelas 11", "Kelas 12"],
         mapel: {
           "Akidah Akhlak (MA)": ["Konsep Tauhid", "Tasawuf & Purifikasi Hati"],
-          "Al-Qur'an Hadis (MA)": ["Metode Penafsiran Al-Qur'an"],
-          "Fikih (MA)": ["Muamalah & Riba"],
-          "Sejarah Kebudayaan Islam / SKI (MA)": ["Dinasti Utsmaniyah"],
-          "Matematika Lanjut": ["Trigonometri", "Matriks"]
+          "Al-Qur'an Hadis (MA)": ["Metode Penafsiran Al-Qur'an", "Autentisitas Hadis"],
+          "Fikih (MA)": ["Muamalah & Riba", "Hukum Keluarga (Munakahat & Waris)"],
+          "Sejarah Kebudayaan Islam / SKI (MA)": ["Dinasti Utsmaniyah", "Pembaharuan Islam Modern"],
+          "Matematika Lanjut": ["Trigonometri", "Matriks & Determinant"]
         }
       }
     };
 
+    // BANK SOAL REAL UNTUK BERBAGAI TOPIK
     const bankSoal = {
       "Hukum Tajwid (Idgham, Izhar, Ikhfa)": [
-        { q: "Apabila ada Nun Sukun (نْ) bertemu dengan huruf Alif/Hamzah (أ), maka hukum bacaannya adalah...", opsi: ["A. Izhar Halqi", "B. Idgham Bighunnah", "C. Ikhfa Hakiki", "D. Iqlab"], ans: "A", detail: "Izhar Halqi terjadi jika Nun Sukun bertemu huruf halqiyah dan dibaca jelas." },
-        { q: "Manakah di bawah ini yang merupakan huruf dari hukum bacaan Idgham Bighunnah?", opsi: ["A. ي , ن , م , و", "B. ل , ر", "C. ب", "D. ء , هـ , ع"], ans: "A", detail: "Huruf Idgham Bighunnah ada 4: Ya, Nun, Mim, Wau." },
-        { q: "Cara membaca hukum tajwid Ikhfa Hakiki yang tepat adalah...", opsi: ["A. Jelas tanpa dengung", "B. Samar-samar disertai dengung", "C. Membalikkan bunyi", "D. Memasukkan huruf"], ans: "B", detail: "Ikhfa berarti menyembunyikan suara dengan dengung." },
-        { q: "Contoh bacaan Izhar Halqi di bawah ini adalah...", opsi: ["A. مَنْ آمَنَ", "B. مَنْ يَقُوْلُ", "C. مِنْ بَعْدِ", "D. مِنْ قَبْلُ"], ans: "A", detail: "Nun sukun bertemu hamzah dibaca jelas." },
-        { q: "Huruf Nun sukun bertemu dengan huruf Ra (ر) dibaca dengan hukum...", opsi: ["A. Idgham Bilaghunnah", "B. Idgham Bighunnah", "C. Izhar Halqi", "D. Ikhfa Hakiki"], ans: "A", detail: "Ra dan Lam adalah huruf Idgham Bilaghunnah." }
-      ],
-      "Hadis tentang Kebersihan & Menuntut Ilmu": [
-        { q: "Kebersihan adalah sebagian dari...", opsi: ["A. Iman", "B. Malas", "C. Pintar", "D. Kaya"], ans: "A", detail: "Kebersihan merupakan cerminan iman seseorang." },
-        { q: "Tuntutlah ilmu sejak dari buaian hingga...", opsi: ["A. Masuk sekolah", "B. Dewasa", "C. Liang lahat", "D. Hari libur"], ans: "C", detail: "Pesan menuntut ilmu berlaku sepanjang hayat." },
-        { q: "Sebelum melaksanakan sholat, diwajibkan untuk...", opsi: ["A. Tidur", "B. Berwudhu", "C. Makan", "D. Berlari"], ans: "B", detail: "Wudhu adalah syarat sah sholat." }
+        { q: "Apabila ada Nun Sukun (نْ) bertemu dengan huruf Alif/Hamzah (أ), maka hukum bacaannya adalah...", opsi: ["A. Izhar Halqi", "B. Idgham Bighunnah", "C. Ikhfa Hakiki", "D. Iqlab"], ans: "A", detail: "Izhar Halqi terjadi jika Nun Sukun/Tanwin bertemu salah satu dari 6 huruf halqiyah (termasuk Alif/Hamzah) dan dibaca jelas." },
+        { q: "Manakah di bawah ini yang merupakan huruf dari hukum bacaan Idgham Bighunnah?", opsi: ["A. ي , ن , م , و", "B. ل , ر", "C. ب", "D. ء , هـ , ع , غ"], ans: "A", detail: "Huruf Idgham Bighunnah ada 4 yaitu Ya (ي), Nun (ن), Mim (م), dan Wau (و)." },
+        { q: "Cara membaca hukum tajwid Ikhfa Hakiki yang tepat adalah...", opsi: ["A. Jelas tanpa dengung", "B. Samar-samar disertai dengung", "C. Membalikkan bunyi menjadi Mim", "D. Memasukkan huruf tanpa dengung"], ans: "B", detail: "Ikhfa secara bahasa berarti menyembunyikan/samar-samar dengan dengung." },
+        { q: "Contoh bacaan Izhar Halqi di bawah ini adalah...", opsi: ["A. مَنْ آمَنَ (Man Aamana)", "B. مَنْ يَقُوْلُ (May yaquulu)", "C. مِنْ بَعْدِ (Mim ba'di)", "D. مِنْ قَبْلُ (Min qablu)"], ans: "A", detail: "Nun sukun bertemu huruf Alif/Hamzah dibaca jelas (Izhar Halqi)." },
+        { q: "Huruf Nun sukun bertemu dengan huruf Ra (ر) dibaca dengan hukum...", opsi: ["A. Idgham Bilaghunnah", "B. Idgham Bighunnah", "C. Izhar Halqi", "D. Ikhfa Hakiki"], ans: "A", detail: "Huruf Idgham Bilaghunnah adalah Lam (ل) dan Ra (ر) dibaca masuk tanpa dengung." }
       ],
       "Simbol dan Sila Pancasila": [
-        { q: "Simbol Rantai Emas pada lambang Garuda Pancasila mencerminkan sila ke-...", opsi: ["A. Pertama", "B. Kedua", "C. Ketiga", "D. Keempat"], ans: "B", detail: "Rantai Emas melambangkan Kemanusiaan yang Adil dan Beradab." },
-        { q: "Pohon Beringin adalah lambang dari Pancasila sila ke-...", opsi: ["A. Pertama", "B. Kedua", "C. Ketiga", "D. Keempat"], ans: "C", detail: "Pohon Beringin melambangkan Persatuan Indonesia." }
+        { q: "Simbol Rantai Emas pada lambang Garuda Pancasila mencerminkan sila ke-...", opsi: ["A. Sila Pertama", "B. Sila Kedua", "C. Sila Ketiga", "D. Sila Keempat"], ans: "B", detail: "Rantai Emas melambangkan Sila Kedua: Kemanusiaan yang Adil dan Beradab." },
+        { q: "Pohon Beringin adalah lambang dari Pancasila sila ke-...", opsi: ["A. Pertama", "B. Kedua", "C. Ketiga", "D. Keempat"], ans: "C", detail: "Pohon Beringin melambangkan Persatuan Indonesia (Sila ke-3)." },
+        { q: "Sikap saling menghormati antar pemeluk agama yang berbeda merupakan pengamalan sila ke-...", opsi: ["A. 1", "B. 2", "C. 3", "D. 4"], ans: "A", detail: "Toleransi beragama merupakan inti pengamalan Sila Pertama." },
+        { q: "Warna latar belakang merah dan putih pada perisai lambang negara melambangkan...", opsi: ["A. Keberanian dan Kesucian", "B. Kejujuran dan Keadilan", "C. Kekuatan dan Perdamaian", "D. Kemakmuran dan Kejayaan"], ans: "A", detail: "Warna Merah melambangkan keberanian dan Putih melambangkan kesucian." },
+        { q: "Musyawarah untuk mencapai mufakat adalah ciri khas dari pengamalan sila ke-...", opsi: ["A. 2", "B. 3", "C. 4", "D. 5"], ans: "C", detail: "Musyawarah tercantum dalam Sila Ke-4 Pancasila." }
+      ],
+      "Wudhu & Tayamum": [
+        { q: "Mengusap sebagian kepala saat wudhu hukumnya adalah...", opsi: ["A. Syarat Sah", "B. Rukun Wudhu", "C. Sunnah Wudhu", "D. Pembatal Wudhu"], ans: "B", detail: "Mengusap kepala termasuk rukun wudhu yang wajib dikerjakan." },
+        { q: "Pengganti wudhu saat tidak ada air atau sakit dinamakan...", opsi: ["A. Mandi Wajib", "B. Tayamum", "C. Istinja", "D. Istihadah"], ans: "B", detail: "Tayamum adalah bersuci menggunakan debu yang suci sebagai pengganti wudhu/mandi." },
+        { q: "Anggota tubuh yang diusap debu saat tayamum adalah...", opsi: ["A. Muka dan Tangan", "B. Muka, Tangan, dan Kaki", "C. Tangan dan Kepala", "D. Telinga dan Kaki"], ans: "A", detail: "Anggota tayamum hanya Wajah dan Kedua Tangan hingga siku." },
+        { q: "Di bawah ini hal yang membatalkan wudhu adalah...", opsi: ["A. Berbicara", "B. Buang Air Kecil", "C. Makan", "D. Minum"], ans: "B", detail: "Keluarnya sesuatu dari dua jalan (buang air) membatalkan wudhu." },
+        { q: "Air yang suci dan mensucikan disebut juga dengan air...", opsi: ["A. Mutanajjis", "B. Musta'mal", "C. Mutlaq", "D. Makruh"], ans: "C", detail: "Air Mutlaq adalah air murni yang suci dan dapat digunakan untuk bersuci." }
       ]
     };
 
@@ -174,74 +216,92 @@
     });
 
     function handleJenjangChange() {
-      const j = document.getElementById("jenjang").value;
-      const k = document.getElementById("kelas");
-      const m = document.getElementById("mapel");
-      k.innerHTML = "";
-      dataPendidikan[j].kelas.forEach(item => k.innerHTML += `<option value="${item}">${item}</option>`);
-      m.innerHTML = "";
-      Object.keys(dataPendidikan[j].mapel).forEach(item => m.innerHTML += `<option value="${item}">${item}</option>`);
+      const jenjangVal = document.getElementById("jenjang").value;
+      const kelasSelect = document.getElementById("kelas");
+      const mapelSelect = document.getElementById("mapel");
+
+      kelasSelect.innerHTML = "";
+      dataPendidikan[jenjangVal].kelas.forEach(k => kelasSelect.innerHTML += `<option value="${k}">${k}</option>`);
+
+      mapelSelect.innerHTML = "";
+      Object.keys(dataPendidikan[jenjangVal].mapel).forEach(m => mapelSelect.innerHTML += `<option value="${m}">${m}</option>`);
       handleMapelChange();
     }
 
     function handleMapelChange() {
-      const j = document.getElementById("jenjang").value;
-      const m = document.getElementById("mapel").value;
-      const t = document.getElementById("topikSelect");
-      t.innerHTML = "";
-      const daftar = dataPendidikan[j].mapel[m] || [];
-      daftar.forEach(item => t.innerHTML += `<option value="${item}">${item}</option>`);
-      t.innerHTML += `<option value="Lainnya">✏️ Lainnya / Input Manual...</option>`;
+      const jenjangVal = document.getElementById("jenjang").value;
+      const mapelVal = document.getElementById("mapel").value;
+      const topikSelect = document.getElementById("topikSelect");
+
+      topikSelect.innerHTML = "";
+      const daftarTopik = dataPendidikan[jenjangVal].mapel[mapelVal] || [];
+      daftarTopik.forEach(t => topikSelect.innerHTML += `<option value="${t}">${t}</option>`);
+      topikSelect.innerHTML += `<option value="Lainnya">✏️ Lainnya / Input Manual...</option>`;
       handleTopikChange();
     }
 
     function handleTopikChange() {
-      const t = document.getElementById("topikSelect");
-      const tm = document.getElementById("topikManual");
-      if (t.value === "Lainnya") { tm.classList.remove("hidden"); tm.required = true; }
-      else { tm.classList.add("hidden"); tm.required = false; }
+      const topikSelect = document.getElementById("topikSelect");
+      const topikManual = document.getElementById("topikManual");
+      if (topikSelect.value === "Lainnya") {
+        topikManual.classList.remove("hidden");
+        topikManual.required = true;
+      } else {
+        topikManual.classList.add("hidden");
+        topikManual.required = false;
+      }
     }
 
     function generateQuiz(e) {
       e.preventDefault();
+
       const btn = document.getElementById("btnSubmit");
       const jenjang = document.getElementById("jenjang").value;
       const kelas = document.getElementById("kelas").value;
       const mapel = document.getElementById("mapel").value;
       let topik = document.getElementById("topikSelect").value;
       if (topik === "Lainnya") topik = document.getElementById("topikManual").value;
+
       const tipeSoal = document.getElementById("tipeSoal").value;
       const jumlah = parseInt(document.getElementById("jumlahSoal").value);
+      const level = document.getElementById("levelKesulitan").value;
 
       btn.disabled = true;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>Membuat Soal...</span>`;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>Menyusun Soal...</span>`;
       lucide.createIcons();
 
       setTimeout(() => {
         btn.disabled = false;
-        btn.innerHTML = `<i data-lucide="rocket" class="w-5 h-5"></i><span>Buat Soal Sekarang</span>`;
+        btn.innerHTML = `<i data-lucide="rocket" class="w-5 h-5"></i><span>Buat Soal</span>`;
         lucide.createIcons();
 
-        let soal = bankSoal[topik] || generateDefault(topik, mapel, jenjang, kelas, jumlah);
-        soal = soal.slice(0, jumlah);
-        renderOutput(jenjang, kelas, mapel, topik, soal, tipeSoal);
-      }, 400);
+        // Ambil soal dari Bank Soal jika tersedia, atau buatkan soal terstruktur
+        let daftarSoal = bankSoal[topik] || generateGenericQuestions(topik, mapel, jenjang, kelas, jumlah);
+        daftarSoal = daftarSoal.slice(0, jumlah);
+
+        renderQuiz(jenjang, kelas, mapel, topik, daftarSoal, tipeSoal, level);
+      }, 500);
     }
 
-    function generateDefault(topik, mapel, jenjang, kelas, jumlah) {
-      let arr = [];
-      for(let i=1; i<=jumlah; i++) {
-        arr.push({
-          q: `Pertanyaan nomor ${i} mengenai materi ${topik} dalam mata pelajaran ${mapel} (${jenjang} ${kelas}): Jelaskan prinsip dasar dan implementasinya secara tepat!`,
-          opsi: [`A. Memahami konsep utama ${topik}`, `B. Mengabaikan variabel analisis`, `C. Menyederhanakan teori`, `D. Menghindari studi kasus`],
+    function generateGenericQuestions(topik, mapel, jenjang, kelas, jumlah) {
+      let list = [];
+      for (let i = 1; i <= jumlah; i++) {
+        list.push({
+          q: `Soal nomor ${i}: Jelaskan konsep utama dan hukum pemahaman yang tepat mengenai materi ${topik} dalam pembelajaran ${mapel} (${jenjang} ${kelas})!`,
+          opsi: [
+            `A. Memahami prinsip dasar dan pengamalan ${topik}`,
+            `B. Membiarkan konsep tanpa dipelajari`,
+            `C. Mengabaikan ketentuan tata cara materi`,
+            `D. Menyederhanakan teori tanpa praktik`
+          ],
           ans: "A",
-          detail: `Pemahaman materi ${topik} sangat penting dalam capaian pembelajaran ${mapel}.`
+          detail: `Pemahaman dan pengamalan konsep ${topik} merupakan inti dari kompetensi dasar ${mapel}.`
         });
       }
-      return arr;
+      return list;
     }
 
-    function renderOutput(jenjang, kelas, mapel, topik, soal, tipeSoal) {
+    function renderQuiz(jenjang, kelas, mapel, topik, daftarSoal, tipeSoal, level) {
       const container = document.getElementById("resultContainer");
       const output = document.getElementById("quizOutput");
 
@@ -249,31 +309,53 @@
         <div class="border-b-2 border-slate-800 pb-4 mb-6 text-center">
           <h2 class="text-xl font-bold uppercase tracking-wide">LEMBAR UJIAN / ASESMEN SEKOLAH</h2>
           <p class="text-sm font-semibold text-slate-600">${mapel} — ${jenjang} (${kelas})</p>
-          <p class="text-xs text-slate-500 italic mt-0.5">Topik: ${topik}</p>
+          <p class="text-xs text-slate-500 italic mt-0.5">Materi / Topik: ${topik}</p>
         </div>
+
         <div class="grid grid-cols-2 text-xs font-semibold gap-2 border p-3 rounded-lg bg-slate-50 mb-6">
           <div>Nama Siswa : ...........................................</div>
           <div>Tanggal : .........................</div>
           <div>Kelas/No : ...........................................</div>
           <div>Waktu : 45 Menit</div>
         </div>
+
         <div class="space-y-6">
       `;
 
-      soal.forEach((item, idx) => {
-        html += `<div class="space-y-2"><p class="font-medium text-sm text-slate-800"><span class="font-bold">${idx + 1}.</span> ${item.q}</p>`;
+      daftarSoal.forEach((item, idx) => {
+        html += `
+          <div class="space-y-2">
+            <p class="font-medium text-sm text-slate-800">
+              <span class="font-bold">${idx + 1}.</span> ${item.q}
+            </p>
+        `;
+
         if (tipeSoal === "Pilihan Ganda") {
           html += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 pl-4 text-sm text-slate-700">`;
           item.opsi.forEach(opt => html += `<div>${opt}</div>`);
           html += `</div>`;
+        } else if (tipeSoal === "Isian Singkat") {
+          html += `<div class="pl-4 pt-1"><div class="border-b border-dashed border-slate-400 w-full max-w-md h-6"></div></div>`;
         } else {
-          html += `<div class="pl-4 pt-1 space-y-2"><div class="border-b border-dashed border-slate-300 w-full h-6"></div><div class="border-b border-dashed border-slate-300 w-full h-6"></div></div>`;
+          html += `
+            <div class="pl-4 pt-1 space-y-2">
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+              <div class="border-b border-dashed border-slate-300 w-full h-5"></div>
+            </div>
+          `;
         }
         html += `</div>`;
       });
 
-      html += `</div><div class="mt-10 pt-6 border-t-2 border-dashed border-slate-300"><h3 class="font-bold text-sm text-slate-700 uppercase tracking-wider mb-3">Kunci Jawaban & Pembahasan</h3><div class="space-y-2 text-xs text-slate-600">`;
-      soal.forEach((item, idx) => {
+      html += `</div>`;
+
+      // KUNCI JAWABAN & PEMBAHASAN
+      html += `
+        <div class="mt-10 pt-6 border-t-2 border-dashed border-slate-300">
+          <h3 class="font-bold text-sm text-slate-700 uppercase tracking-wider mb-3">Kunci Jawaban & Pembahasan</h3>
+          <div class="space-y-2 text-xs text-slate-600">
+      `;
+      daftarSoal.forEach((item, idx) => {
         html += `<p><strong>${idx + 1}. Jawaban: ${item.ans}</strong> — ${item.detail}</p>`;
       });
       html += `</div></div>`;
@@ -285,4 +367,3 @@
   </script>
 </body>
 </html>
-
