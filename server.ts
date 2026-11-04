@@ -95,38 +95,75 @@ Catatan: Jika Tipe soal 'Isian Singkat' atau 'Uraian / Essay', array 'opsi' bole
       const count = Number(jumlahSoal) || 5;
       const fallbackSoal = [];
       for (let i = 1; i <= count; i++) {
+        let qText = `Manakah pernyataan yang paling tepat untuk mendefinisikan konsep '${topik}' dalam mata pelajaran ${mapel} untuk tingkat ${jenjang} (${kelas})?`;
+        let opsiList = [
+          `A. Memahami prinsip dasar, karakteristik, dan penerapan ${topik} secara sistematis.`,
+          `B. Mengabaikan aspek teoretis dan fokus pada hafalan semata.`,
+          `C. Menggunakan rumus yang tidak relevan dengan konteks permasalahan.`,
+          `D. Menolak adanya korelasi antara teori dan praktik ${topik}.`
+        ];
+        let kunciJawaban = `A. Memahami prinsip dasar, karakteristik, dan penerapan ${topik} secara sistematis.`;
+        let pembahasanText = `Pembahasan: Topik '${topik}' pada mata pelajaran ${mapel} (${jenjang} - ${kelas}) menuntut pemahaman konseptual yang mendalam serta kemampuan analisis yang tepat sesuai standar kompetensi kurikulum.`;
+
+        if (topik.toLowerCase().includes('pythagoras') || mapel.toLowerCase().includes('matematika')) {
+          const a = 3 * i;
+          const b = 4 * i;
+          const c = 5 * i;
+          qText = `Pada sebuah segitiga siku-siku, panjang sisi siku-siku adalah ${a} cm dan ${b} cm. Berapakah panjang sisi miring (hipotenusa) berdasarkan Teorema Pythagoras?`;
+          opsiList = [
+            `A. ${c} cm`,
+            `B. ${a + b} cm`,
+            `C. ${Math.abs(b - a)} cm`,
+            `D. ${c + 2} cm`
+          ];
+          kunciJawaban = `A. ${c} cm`;
+          pembahasanText = `Menggunakan rumus Pythagoras c² = a² + b² => c² = (${a})² + (${b})² = ${a*a} + ${b*b} = ${c*c}. Maka c = ${c} cm.`;
+        } else if (mapel.toLowerCase().includes('akidah') || mapel.toLowerCase().includes('fikih') || mapel.toLowerCase().includes('qur\'an') || mapel.toLowerCase().includes('ski')) {
+          qText = `Dalam kajian ${mapel} (${jenjang} ${kelas}) mengenai materi '${topik}', prinsip utama yang harus diamalkan oleh setiap peserta didik adalah...`;
+          opsiList = [
+            `A. Mengamalkan nilai-nilai keimanan, ketundukan, dan akhlak mulia dalam kehidupan sehari-hari.`,
+            `B. Mempelajari teori tanpa pernah menerapkannya dalam amal shaleh.`,
+            `C. Mengabaikan adab dan etika Islami dalam pergaulan sosial.`,
+            `D. Memahami ajaran agama sebatas pengetahuan akademis semata.`
+          ];
+          kunciJawaban = `A. Mengamalkan nilai-nilai keimanan, ketundukan, dan akhlak mulia dalam kehidupan sehari-hari.`;
+          pembahasanText = `Pembahasan: Pembelajaran ${mapel} pada topik ${topik} bertujuan membentuk karakter peserta didik yang berakhlakul karimah serta memahami hukum dan akidah secara benar.`;
+        }
+
         fallbackSoal.push({
           id: i,
-          pertanyaan: `Pertanyaan uji kompetensi ${i} mengenai materi '${topik}' dalam mata pelajaran '${mapel}' (${jenjang} - ${kelas}). Jelaskan konsep dan analisis penyelesaiannya secara komprehensif.`,
-          opsi: tipeSoal === 'Pilihan Ganda' ? [
-            `A. Konsep utama dan aplikasi praktis ${topik}`,
-            `B. Analisis sekunder tanpa variabel pendukung`,
-            `C. Pendekatan teoretis yang diabaikan`,
-            `D. Evaluasi parsial terhadap objek kajian`
-          ] : [],
-          kunci: `A. Konsep utama dan aplikasi praktis ${topik}`,
-          pembahasan: `Pembahasan rinci untuk soal ${i}: Topik ${topik} pada ${mapel} menekankan pemahaman konsep dasar dan implementasi analitis.`
+          nomor: i,
+          pertanyaan: qText,
+          opsi: tipeSoal === 'Pilihan Ganda' ? opsiList : [],
+          jawaban: kunciJawaban,
+          pembahasan: pembahasanText
         });
       }
       return res.json({ soal: fallbackSoal });
 
     } catch (error: any) {
       console.error("Error in /api/generate-questions:", error);
-      // Return fallback response instead of 500 error
       const count = Number(req.body.jumlahSoal) || 5;
       const fallbackSoal = [];
+      const reqTopik = req.body.topik || 'Materi Pembelajaran';
+      const reqMapel = req.body.mapel || 'Mata Pelajaran';
+      const reqJenjang = req.body.jenjang || 'Sekolah';
+      const reqKelas = req.body.kelas || 'Kelas';
+      const reqTipe = req.body.tipeSoal || 'Pilihan Ganda';
+
       for (let i = 1; i <= count; i++) {
         fallbackSoal.push({
           id: i,
-          pertanyaan: `Pertanyaan uji kompetensi ${i} mengenai materi '${req.body.topik || 'Materi Pembelajaran'}' (${req.body.mapel || 'Mata Pelajaran'}).`,
-          opsi: req.body.tipeSoal === 'Pilihan Ganda' ? [
-            `A. Pilihan jawaban benar untuk konsep dasar`,
+          nomor: i,
+          pertanyaan: `Pertanyaan evaluasi ${i} mengenai materi '${reqTopik}' dalam ${reqMapel} (${reqJenjang} - ${reqKelas}).`,
+          opsi: reqTipe === 'Pilihan Ganda' ? [
+            `A. Pilihan jawaban benar untuk konsep ${reqTopik}`,
             `B. Pilihan pengecoh pertama`,
             `C. Pilihan pengecoh kedua`,
             `D. Pilihan pengecoh ketiga`
           ] : [],
-          kunci: `A. Pilihan jawaban benar untuk konsep dasar`,
-          pembahasan: `Pembahasan: Pemahaman materi ini memerlukan analisis sistematis.`
+          jawaban: `A. Pilihan jawaban benar untuk konsep ${reqTopik}`,
+          pembahasan: `Pembahasan: Pemahaman materi ${reqTopik} memerlukan analisis sistematis dan komprehensif.`
         });
       }
       return res.json({ soal: fallbackSoal });
